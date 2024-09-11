@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>ARLClustering - Testing Facebook L1 Organization dataset</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">ARLClustering - Testing Facebook L1
+Organization dataset</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(arlclustering)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co">#library(igraph)</span></span></code></pre></div>
+<div id="dataset-description" class="section level2">
+<h2>Dataset description</h2>
+<p>The Facebook L1 organization social network dataset is a gml file,
+containing 5793 nodes and 45266 edges.</p>
+</div>
+<div id="loading-network-dataset" class="section level2">
+<h2>Loading network dataset</h2>
+<ul>
+<li>Graph Label : Facebook L1 Organization</li>
+<li>Total Nodes : 5793</li>
+<li>Total Edges : 45266</li>
+<li>Average Degree : 15.62783</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Start the timer</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>t1 <span class="ot">&lt;-</span> <span class="fu">system.time</span>({</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  dataset_path <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;Facebook_Org_L1.gml&quot;</span>, <span class="at">package =</span> <span class="st">&quot;arlclustering&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="cf">if</span> (dataset_path <span class="sc">==</span> <span class="st">&quot;&quot;</span>) {</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;Facebook_Org_L1.gml file not found&quot;</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  }</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  </span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  g <span class="ot">&lt;-</span> <span class="fu">arlc_get_network_dataset</span>(dataset_path, <span class="st">&quot;Facebook L1 Organization&quot;</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  g<span class="sc">$</span>graphLabel</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>  g<span class="sc">$</span>totalNodes</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>  g<span class="sc">$</span>totalEdges</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  g<span class="sc">$</span>averageDegree</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>})</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co"># Display the total processing time</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;Graph loading Processing Time: &quot;</span>, t1[<span class="st">&quot;elapsed&quot;</span>], <span class="st">&quot; seconds</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; Graph loading Processing Time: 0.360999999999999 seconds</span></span></code></pre></div>
+</div>
+<div id="generate-transactions" class="section level2">
+<h2>Generate Transactions</h2>
+<p>Next, we generate transactions from the graph, with a total rows of
+3541.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Start the timer</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>t2 <span class="ot">&lt;-</span> <span class="fu">system.time</span>({</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  transactions <span class="ot">&lt;-</span> <span class="fu">arlc_gen_transactions</span>(g<span class="sc">$</span>graph)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  transactions</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>})</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co"># Display the total processing time</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;Transaction dataset Processing Time: &quot;</span>, t2[<span class="st">&quot;elapsed&quot;</span>], <span class="st">&quot; seconds</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; Transaction dataset Processing Time: 2.795 seconds</span></span></code></pre></div>
+</div>
+<div id="get-apriori-thresholds" class="section level2">
+<h2>Get Apriori Thresholds</h2>
+<p>We obtain the apriori thresholds for the generated transactions. The
+following are the thresholds for the apriori execution: - The Minimum
+Support : 0.002 - The Minimum Confidence : 0.5 - The Lift : 442.625 -
+The Gross Rules length : 97825 - The selection Ratio : 28</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Start the timer</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>t3 <span class="ot">&lt;-</span> <span class="fu">system.time</span>({</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  params <span class="ot">&lt;-</span> <span class="fu">arlc_get_apriori_thresholds</span>(transactions,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>                                        <span class="at">supportRange =</span> <span class="fu">seq</span>(<span class="fl">0.002</span>, <span class="fl">0.003</span>, <span class="at">by =</span> <span class="fl">0.001</span>),</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>                                        <span class="at">Conf =</span> <span class="fl">0.5</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  params<span class="sc">$</span>minSupp</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  params<span class="sc">$</span>minConf</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  params<span class="sc">$</span>bestLift</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  params<span class="sc">$</span>lenRules</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  params<span class="sc">$</span>ratio</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>})</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co"># Display the total processing time</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;Graph loading Processing Time: &quot;</span>, t3[<span class="st">&quot;elapsed&quot;</span>], <span class="st">&quot; seconds</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; Graph loading Processing Time: 0.189 seconds</span></span></code></pre></div>
+</div>
+<div id="generate-gross-rules" class="section level2">
+<h2>Generate Gross Rules</h2>
+<p>We use the obtained parameters to generate gross rules, where we
+obtain 97858 rules.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Start the timer</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>t4 <span class="ot">&lt;-</span> <span class="fu">system.time</span>({</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  minLenRules <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  maxLenRules <span class="ot">&lt;-</span> params<span class="sc">$</span>lenRules</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.finite</span>(maxLenRules) <span class="sc">||</span> maxLenRules <span class="sc">&gt;</span> <span class="dv">5</span><span class="sc">*</span><span class="fu">length</span>(transactions)) {</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    maxLenRules <span class="ot">&lt;-</span> <span class="dv">5</span><span class="sc">*</span><span class="fu">length</span>(transactions)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  }</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  </span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  grossRules <span class="ot">&lt;-</span> <span class="fu">arlc_gen_gross_rules</span>(transactions,</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>                                     <span class="at">minSupp =</span> params<span class="sc">$</span>minSupp,</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>                                     <span class="at">minConf =</span> params<span class="sc">$</span>minConf,</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>                                     <span class="at">minLenRules =</span> minLenRules<span class="sc">+</span><span class="dv">1</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>                                     <span class="at">maxLenRules =</span> maxLenRules)</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  grossRules<span class="sc">$</span>TotalRulesWithLengthFilter</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>})</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt; Apriori</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; Parameter specification:</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt;  confidence minval smax arem  aval originalSupport maxtime support minlen</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt;         0.5    0.1    1 none FALSE            TRUE       5   0.002      2</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt;  maxlen target  ext</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt;   17705  rules TRUE</span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a><span class="co">#&gt; Algorithmic control:</span></span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a><span class="co">#&gt;  filter tree heap memopt load sort verbose</span></span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a><span class="co">#&gt;     0.1 TRUE TRUE  FALSE TRUE    2    TRUE</span></span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a><span class="co">#&gt; Absolute minimum support count: 7 </span></span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a><span class="co">#&gt; set item appearances ...[0 item(s)] done [0.00s].</span></span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a><span class="co">#&gt; set transactions ...[5713 item(s), 3541 transaction(s)] done [0.01s].</span></span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a><span class="co">#&gt; sorting and recoding items ... [952 item(s)] done [0.00s].</span></span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a><span class="co">#&gt; creating transaction tree ... done [0.00s].</span></span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a><span class="co">#&gt; checking subsets of size 1 2 3 4 5 6 7 8 9 10 11 done [0.05s].</span></span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a><span class="co">#&gt; writing ... [97858 rule(s)] done [0.03s].</span></span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a><span class="co">#&gt; creating S4 object  ... done [0.03s].</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Display the total number of clusters and the total processing time</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;Gross rules generation Time: &quot;</span>, t4[<span class="st">&quot;elapsed&quot;</span>], <span class="st">&quot; seconds</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; Gross rules generation Time: 0.166 seconds</span></span></code></pre></div>
+</div>
+<div id="filter-significant-and-non-redundant-rules" class="section level2">
+<h2>Filter Significant and Non-Redundant Rules</h2>
+<p>We filter out redundant rules from the generated gross rules. Next,
+we filter out non-significant rules from the non-redundant rules, and we
+obtain the 18907 rule items.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>t5 <span class="ot">&lt;-</span> <span class="fu">system.time</span>({</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  NonRedRules <span class="ot">&lt;-</span> <span class="fu">arlc_get_NonR_rules</span>(grossRules<span class="sc">$</span>GrossRules)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  NonRSigRules <span class="ot">&lt;-</span> <span class="fu">arlc_get_significant_rules</span>(transactions,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>                                             NonRedRules<span class="sc">$</span>FiltredRules)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  NonRSigRules<span class="sc">$</span>TotFiltredRules</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>})</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co"># Display the total number of clusters and the total processing time</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Clearing rules Processing Time: &quot;</span>, t5[<span class="st">&quot;elapsed&quot;</span>], <span class="st">&quot; seconds</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; Clearing rules Processing Time: 4.496 seconds</span></span></code></pre></div>
+</div>
+<div id="clean-and-genarate-final-rules" class="section level2">
+<h2>Clean and genarate final Rules</h2>
+<p>We clean the final set of rules to prepare for clustering. Then, we
+generate clusters based on the cleaned rules. The total identified
+clusters is 190 clusters.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>t6 <span class="ot">&lt;-</span> <span class="fu">system.time</span>({</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  cleanedRules <span class="ot">&lt;-</span> <span class="fu">arlc_clean_final_rules</span>(NonRSigRules<span class="sc">$</span>FiltredRules)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  clusters <span class="ot">&lt;-</span> <span class="fu">arlc_generate_clusters</span>(cleanedRules)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  clusters<span class="sc">$</span>TotClusters</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>})</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co"># Display the total number of clusters and the total processing time</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;Cleaning final rules Processing Time: &quot;</span>, t6[<span class="st">&quot;elapsed&quot;</span>], <span class="st">&quot; seconds</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; Cleaning final rules Processing Time: 1.624 seconds</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;The total comsumed time is:&quot;</span>,t1[<span class="st">&quot;elapsed&quot;</span>]<span class="sc">+</span> t2[<span class="st">&quot;elapsed&quot;</span>]<span class="sc">+</span>t3[<span class="st">&quot;elapsed&quot;</span>]<span class="sc">+</span>t4[<span class="st">&quot;elapsed&quot;</span>]<span class="sc">+</span>t5[<span class="st">&quot;elapsed&quot;</span>]<span class="sc">+</span>t6[<span class="st">&quot;elapsed&quot;</span>], <span class="st">&quot;seconds</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; The total comsumed time is:9.631seconds</span></span></code></pre></div>
+</div>
+<div id="plot-clusters" class="section level2">
+<h2>Plot Clusters</h2>
+<p>Finally, we visualize the identified clusters.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">arlc_clusters_plot</span>(g<span class="sc">$</span>graph,</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>                   g<span class="sc">$</span>graphLabel,</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>                   clusters<span class="sc">$</span>Clusters)</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; Total Identified Clusters: 190</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt;  =========================</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt;   Community 01:3 19 23 36 37 144 5286</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt;   Community 02:6 1753</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt;   Community 03:7 1905 2642 3976</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co">#&gt;   Community 04:8 1853</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt;   Community 05:11 60 375 376 378 379 380 381 382 383 385 387 390 391 397 398 399 400 408 1005 1020 1029 1037 1044 1053 1054 1055 1064 1769</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co">#&gt;   Community 06:16 60</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co">#&gt;   Community 07:18 401</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co">#&gt;   Community 08:19 23 36 37 1747</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#&gt;   Community 09:22 46</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="co">#&gt;   Community 10:37 1747 1758</span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#&gt;   Community 11:49 60</span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt;   Community 12:60 1753</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="co">#&gt;   Community 13:62 1004 1061 2236</span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="co">#&gt;   Community 14:82 553 560</span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="co">#&gt;   Community 15:83 87 95 98 100 104 107 552 553 590 639 656 658 944 960 962 1641 1737 2181</span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a><span class="co">#&gt;   Community 16:85 89 92 566 568 653 949 950 955 961 963 964</span></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a><span class="co">#&gt;   Community 17:89 566 637 644 653 949 955 964 2520</span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a><span class="co">#&gt;   Community 18:92 566 568 653 949 955 961 963 964 1479</span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a><span class="co">#&gt;   Community 19:96 553 962</span></span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a><span class="co">#&gt;   Community 20:108 120 2287 3144</span></span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a><span class="co">#&gt;   Community 21:111 120 989 2287 2956 2961</span></span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a><span class="co">#&gt;   Community 22:144 392 402 988 989 990 1747 1755 1758 1809 1817 2226 2233 2235 2250 2337 2528 2992 3008 3021 3153 3829 3834 4298</span></span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a><span class="co">#&gt;   Community 23:157 167 188 241</span></span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a><span class="co">#&gt;   Community 24:160 171</span></span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a><span class="co">#&gt;   Community 25:161 163 171 173 185 186 192 208 220 713 780 876 1100 1103 1111 1215 1321 1374 1510</span></span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a><span class="co">#&gt;   Community 26:163 170 171 173 181 184 185 192 208 213 219 220 481 693 713 780 876 1100 1215 1216 1321 1374 1510 1537</span></span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a><span class="co">#&gt;   Community 27:164 185 186 192</span></span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a><span class="co">#&gt;   Community 28:166 185 481 780</span></span>
+<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a><span class="co">#&gt;   Community 29:167 179 180 187 188 210 231 241 605 702 718 864 1094 1122 1378 1402</span></span>
+<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a><span class="co">#&gt;   Community 30:171 173 181 183 184 185 186 192 219 220 276 478 481 525 693 698 713 714 717 719 721 780 859 860 870 1100 1103 1215 1243</span></span>
+<span id="cb10-37"><a href="#cb10-37" tabindex="-1"></a><span class="co">#&gt;   Community 31:172 185</span></span>
+<span id="cb10-38"><a href="#cb10-38" tabindex="-1"></a><span class="co">#&gt;   Community 32:174 185</span></span>
+<span id="cb10-39"><a href="#cb10-39" tabindex="-1"></a><span class="co">#&gt;   Community 33:177 185</span></span>
+<span id="cb10-40"><a href="#cb10-40" tabindex="-1"></a><span class="co">#&gt;   Community 34:178 185</span></span>
+<span id="cb10-41"><a href="#cb10-41" tabindex="-1"></a><span class="co">#&gt;   Community 35:179 180 187 188 210 216 222 225 231 241 874 976 1122 1123 1378 1402 1531</span></span>
+<span id="cb10-42"><a href="#cb10-42" tabindex="-1"></a><span class="co">#&gt;   Community 36:181 185 186 220 525 693 713 717 780 859 1100 1103 1509</span></span>
+<span id="cb10-43"><a href="#cb10-43" tabindex="-1"></a><span class="co">#&gt;   Community 37:185 186 191 192 207 208 212 213 217 219 220 223 224 226 234 269 270 273 275 276 279 285 478 479 481 489 525 547 610 619 621 626 630 693 694 695 698 700 705 706 708 709 713 714 716 717 719 720 721 749 780 835 859 860 876 917 1100 1103 1111 1121 1215 1243 1374 1434 1508 1510</span></span>
+<span id="cb10-44"><a href="#cb10-44" tabindex="-1"></a><span class="co">#&gt;   Community 38:187 188 210 231 241 605 976 1094 1122 1123 1378</span></span>
+<span id="cb10-45"><a href="#cb10-45" tabindex="-1"></a><span class="co">#&gt;   Community 39:188 210 216 228 231 233 241 362 605 702 718 864 918 976 1094 1112 1122 1123 1378 1383 1402 1531</span></span>
+<span id="cb10-46"><a href="#cb10-46" tabindex="-1"></a><span class="co">#&gt;   Community 40:191 630 695 700 701 703 706 709 716 717 835 840</span></span>
+<span id="cb10-47"><a href="#cb10-47" tabindex="-1"></a><span class="co">#&gt;   Community 41:208 213 215 219 220 224 236 713 876 1100 1111 1215 1216 1374 1405 1537</span></span>
+<span id="cb10-48"><a href="#cb10-48" tabindex="-1"></a><span class="co">#&gt;   Community 42:210 216 222 225 227 228 231 233 241 265 314 362 605 696 699 702 712 718 740 741 834 864 874 1077 1083 1094 1112 1122 1123 1139 1146 1272 1276 1279 1286 1378 1383 1397 1402 1503 1515 1525 1528 1531 1545 1547 1648 2036 2451 2576</span></span>
+<span id="cb10-49"><a href="#cb10-49" tabindex="-1"></a><span class="co">#&gt;   Community 43:214 713 862</span></span>
+<span id="cb10-50"><a href="#cb10-50" tabindex="-1"></a><span class="co">#&gt;   Community 44:215 876 1536 1600 1601</span></span>
+<span id="cb10-51"><a href="#cb10-51" tabindex="-1"></a><span class="co">#&gt;   Community 45:216 222 225 227 228 231 233 237 241 605 702 718 864 869 874 918 1083 1094 1122 1123 1378 1383 1402 1491 1515 1531</span></span>
+<span id="cb10-52"><a href="#cb10-52" tabindex="-1"></a><span class="co">#&gt;   Community 46:219 220 224 236 481 713 719 749 780 859 860 876 1100 1103 1111 1374</span></span>
+<span id="cb10-53"><a href="#cb10-53" tabindex="-1"></a><span class="co">#&gt;   Community 47:220 223 224 236 276 478 479 481 525 539 547 693 698 713 719 721 749 780 859 860 862 876 1100 1103 1111 1215 1374</span></span>
+<span id="cb10-54"><a href="#cb10-54" tabindex="-1"></a><span class="co">#&gt;   Community 48:223 481 547 694 695 713 749 780 2410</span></span>
+<span id="cb10-55"><a href="#cb10-55" tabindex="-1"></a><span class="co">#&gt;   Community 49:226 270 273 917 2410</span></span>
+<span id="cb10-56"><a href="#cb10-56" tabindex="-1"></a><span class="co">#&gt;   Community 50:227 228 233 241 265 277 280 287 605 702 718 1076 1077 1078 1079 1083 1094 1122 1402 1531 1797</span></span>
+<span id="cb10-57"><a href="#cb10-57" tabindex="-1"></a><span class="co">#&gt;   Community 51:228 231 233 237 241 265 605 702 718 864 869 1076 1077 1083 1094 1107 1122 1123 1242 1402 1504 1531 1797 2274</span></span>
+<span id="cb10-58"><a href="#cb10-58" tabindex="-1"></a><span class="co">#&gt;   Community 52:233 241 265 280 605 702 1076 1077 1078 1079 1083 1094 1122 1123 1402 1531 1797 2275</span></span>
+<span id="cb10-59"><a href="#cb10-59" tabindex="-1"></a><span class="co">#&gt;   Community 53:241 362 605 702 718 864 874 918 976 1083 1094 1107 1112 1122 1123 1242 1327 1378 1383 1396 1402 1491 1515 1531 1795 1797</span></span>
+<span id="cb10-60"><a href="#cb10-60" tabindex="-1"></a><span class="co">#&gt;   Community 54:265 277 280 287 605 777 1077 1083 1094 1242 1397 2273 2275 2451</span></span>
+<span id="cb10-61"><a href="#cb10-61" tabindex="-1"></a><span class="co">#&gt;   Community 55:267 279</span></span>
+<span id="cb10-62"><a href="#cb10-62" tabindex="-1"></a><span class="co">#&gt;   Community 56:268 602</span></span>
+<span id="cb10-63"><a href="#cb10-63" tabindex="-1"></a><span class="co">#&gt;   Community 57:276 489 547 695 713 714 719 1091 1103</span></span>
+<span id="cb10-64"><a href="#cb10-64" tabindex="-1"></a><span class="co">#&gt;   Community 58:344 358 364 369</span></span>
+<span id="cb10-65"><a href="#cb10-65" tabindex="-1"></a><span class="co">#&gt;   Community 59:346 350 354 356 357 360 365 368 515 520 728 740 750 755 757 761 1262</span></span>
+<span id="cb10-66"><a href="#cb10-66" tabindex="-1"></a><span class="co">#&gt;   Community 60:347 348 349 352 353 355 358 359 363 364 367 369 370 519 522 524 738 743 748 751 753 758</span></span>
+<span id="cb10-67"><a href="#cb10-67" tabindex="-1"></a><span class="co">#&gt;   Community 61:358 359 363 364 367 369 370 371 522 523 524 525 738 743 748 751 753 758</span></span>
+<span id="cb10-68"><a href="#cb10-68" tabindex="-1"></a><span class="co">#&gt;   Community 62:362 1122 1378 1396 2171 3079</span></span>
+<span id="cb10-69"><a href="#cb10-69" tabindex="-1"></a><span class="co">#&gt;   Community 63:363 364 367 369 370 519 522 524 525 738 743 751 753</span></span>
+<span id="cb10-70"><a href="#cb10-70" tabindex="-1"></a><span class="co">#&gt;   Community 64:369 370 371 372 519 522 523 524 525 730 738 743 748 751 753 758</span></span>
+<span id="cb10-71"><a href="#cb10-71" tabindex="-1"></a><span class="co">#&gt;   Community 65:373 392 402 407 988 989 990 1033 1747 1755 1758 2337 2528 2742 2956 3021 3023 3150 3153 3157 3393</span></span>
+<span id="cb10-72"><a href="#cb10-72" tabindex="-1"></a><span class="co">#&gt;   Community 66:374 380 382 386 399 400 408 1005 1064 3011 3029</span></span>
+<span id="cb10-73"><a href="#cb10-73" tabindex="-1"></a><span class="co">#&gt;   Community 67:378 381 382 391 399 1005 1021 1029 1055</span></span>
+<span id="cb10-74"><a href="#cb10-74" tabindex="-1"></a><span class="co">#&gt;   Community 68:380 381 382 386 395 397 398 399 400 403 408 1005 1029 1037 1053 1054 1055 1064 1410 2994 3002 3011 3022 3029</span></span>
+<span id="cb10-75"><a href="#cb10-75" tabindex="-1"></a><span class="co">#&gt;   Community 69:381 382 385 386 395 397 398 399 400 403 408 1005 1008 1020 1029 1047 1053 1054 1055 1064 1913 2499 2968 2994 3002 3011 3029</span></span>
+<span id="cb10-76"><a href="#cb10-76" tabindex="-1"></a><span class="co">#&gt;   Community 70:382 383 385 386 387 391 395 397 398 399 400 403 408 1002 1004 1005 1010 1014 1018 1020 1021 1028 1029 1037 1040 1043 1047 1053 1054 1055 1061 1064 1068 1769 2999 3002 3011 3029</span></span>
+<span id="cb10-77"><a href="#cb10-77" tabindex="-1"></a><span class="co">#&gt;   Community 71:383 387 390 391 398 399 405 1020 1029 1044 1753</span></span>
+<span id="cb10-78"><a href="#cb10-78" tabindex="-1"></a><span class="co">#&gt;   Community 72:386 395 399 400 403 408 1005 1037 1410 2994 3002 3011 3022 3029 3154</span></span>
+<span id="cb10-79"><a href="#cb10-79" tabindex="-1"></a><span class="co">#&gt;   Community 73:390 391 399 1006 1750 1762 1769</span></span>
+<span id="cb10-80"><a href="#cb10-80" tabindex="-1"></a><span class="co">#&gt;   Community 74:392 402 407 988 989 990 1747 1751 2233 2337 2528 2956 2961 2992 3021 3022 3023 3150 3153 3157 3393</span></span>
+<span id="cb10-81"><a href="#cb10-81" tabindex="-1"></a><span class="co">#&gt;   Community 75:396 2246</span></span>
+<span id="cb10-82"><a href="#cb10-82" tabindex="-1"></a><span class="co">#&gt;   Community 76:397 399 1005 1008 1020 1029 1053 1054 1055 1410 2243 2724 2968 3002 3011</span></span>
+<span id="cb10-83"><a href="#cb10-83" tabindex="-1"></a><span class="co">#&gt;   Community 77:399 400 403 408 1005 1010 1014 1020 1021 1029 1037 1044 1047 1053 1054 1055 1061 1064 1068 1769 3002 3011 3029</span></span>
+<span id="cb10-84"><a href="#cb10-84" tabindex="-1"></a><span class="co">#&gt;   Community 78:400 403 408 1005 1037 1064 1410 2499 3002 3011 3029</span></span>
+<span id="cb10-85"><a href="#cb10-85" tabindex="-1"></a><span class="co">#&gt;   Community 79:402 407 988 989 990 1033 1643 1747 1751 1755 1758 1764 2233 2337 2528 2742 2958 2961 2992 3008 3021 3153 3157 3393 3591</span></span>
+<span id="cb10-86"><a href="#cb10-86" tabindex="-1"></a><span class="co">#&gt;   Community 80:408 1005 1037 1055 1410 2994 3002 3011 3022 3029 3208</span></span>
+<span id="cb10-87"><a href="#cb10-87" tabindex="-1"></a><span class="co">#&gt;   Community 81:515 520 728 740 741 750 755 757 761 1146 1262 1286 1503 1545 1547</span></span>
+<span id="cb10-88"><a href="#cb10-88" tabindex="-1"></a><span class="co">#&gt;   Community 82:525 539 713 717 721 735 748 749 780 1100 1103 1121 1215</span></span>
+<span id="cb10-89"><a href="#cb10-89" tabindex="-1"></a><span class="co">#&gt;   Community 83:532 616 754 780 1246 1532</span></span>
+<span id="cb10-90"><a href="#cb10-90" tabindex="-1"></a><span class="co">#&gt;   Community 84:533 540 735 1134 1135</span></span>
+<span id="cb10-91"><a href="#cb10-91" tabindex="-1"></a><span class="co">#&gt;   Community 85:534 566 585 588 880 909 1496 1887</span></span>
+<span id="cb10-92"><a href="#cb10-92" tabindex="-1"></a><span class="co">#&gt;   Community 86:537 1525 1533</span></span>
+<span id="cb10-93"><a href="#cb10-93" tabindex="-1"></a><span class="co">#&gt;   Community 87:538 754 756 771 773 778 1143 1428 1470 2054</span></span>
+<span id="cb10-94"><a href="#cb10-94" tabindex="-1"></a><span class="co">#&gt;   Community 88:540 541 543 735 778 1134 1135 1143 1147 1148 1308 1428</span></span>
+<span id="cb10-95"><a href="#cb10-95" tabindex="-1"></a><span class="co">#&gt;   Community 89:541 1134 1147 1269 1312</span></span>
+<span id="cb10-96"><a href="#cb10-96" tabindex="-1"></a><span class="co">#&gt;   Community 90:546 1143 1428</span></span>
+<span id="cb10-97"><a href="#cb10-97" tabindex="-1"></a><span class="co">#&gt;   Community 91:553 560 569 658 944 960 962 1476 2181</span></span>
+<span id="cb10-98"><a href="#cb10-98" tabindex="-1"></a><span class="co">#&gt;   Community 92:566 568 588 592 637 644 653 939 949 950 955 961 963 964 1335 2043 2513 2515 2520</span></span>
+<span id="cb10-99"><a href="#cb10-99" tabindex="-1"></a><span class="co">#&gt;   Community 93:585 890 909</span></span>
+<span id="cb10-100"><a href="#cb10-100" tabindex="-1"></a><span class="co">#&gt;   Community 94:588 653 939 1128 1129 1335 1338 1354</span></span>
+<span id="cb10-101"><a href="#cb10-101" tabindex="-1"></a><span class="co">#&gt;   Community 95:605 696 702 712 718 864 1077 1083 1094 1107 1108 1122 1123 1242 1378 1402 1504 1515 1516 1531</span></span>
+<span id="cb10-102"><a href="#cb10-102" tabindex="-1"></a><span class="co">#&gt;   Community 96:637 644 653 949 950 955 963 964 1128 1335 1354 2043 2513 2515 2520</span></span>
+<span id="cb10-103"><a href="#cb10-103" tabindex="-1"></a><span class="co">#&gt;   Community 97:638 641 656 658</span></span>
+<span id="cb10-104"><a href="#cb10-104" tabindex="-1"></a><span class="co">#&gt;   Community 98:641 648 652 656 658 956</span></span>
+<span id="cb10-105"><a href="#cb10-105" tabindex="-1"></a><span class="co">#&gt;   Community 99:653 949 950 955 961 963 964 1335 1479 2043 2513 2515 2520</span></span>
+<span id="cb10-106"><a href="#cb10-106" tabindex="-1"></a><span class="co">#&gt;   Community 100:655 656</span></span>
+<span id="cb10-107"><a href="#cb10-107" tabindex="-1"></a><span class="co">#&gt;   Community 101:656 658 945 952 956</span></span>
+<span id="cb10-108"><a href="#cb10-108" tabindex="-1"></a><span class="co">#&gt;   Community 102:658 944 956 1336 1342 1348 1353 1356</span></span>
+<span id="cb10-109"><a href="#cb10-109" tabindex="-1"></a><span class="co">#&gt;   Community 103:695 700 701 703 705 706 709 713 716 717 720 835 840</span></span>
+<span id="cb10-110"><a href="#cb10-110" tabindex="-1"></a><span class="co">#&gt;   Community 104:696 699 702 712 718 834 845 846 1094 1146</span></span>
+<span id="cb10-111"><a href="#cb10-111" tabindex="-1"></a><span class="co">#&gt;   Community 105:702 712 718 864 1083 1094 1122 1123 1242 1402 1504 1515 2274 2275</span></span>
+<span id="cb10-112"><a href="#cb10-112" tabindex="-1"></a><span class="co">#&gt;   Community 106:708 1520</span></span>
+<span id="cb10-113"><a href="#cb10-113" tabindex="-1"></a><span class="co">#&gt;   Community 107:713 714 717 719 720 721 749 780 859 860 862 876 1091 1100 1103 1121 1215 1216 1219 1374 1510 1537</span></span>
+<span id="cb10-114"><a href="#cb10-114" tabindex="-1"></a><span class="co">#&gt;   Community 108:717 835 840 1103</span></span>
+<span id="cb10-115"><a href="#cb10-115" tabindex="-1"></a><span class="co">#&gt;   Community 109:718 834 845 846 864 1094 1112 1122 1123 1146 1402 1515</span></span>
+<span id="cb10-116"><a href="#cb10-116" tabindex="-1"></a><span class="co">#&gt;   Community 110:736 746</span></span>
+<span id="cb10-117"><a href="#cb10-117" tabindex="-1"></a><span class="co">#&gt;   Community 111:741 750 939 1129 1272 1276 1278 1286 1293 1310 1323 1525 1528 1545 2036</span></span>
+<span id="cb10-118"><a href="#cb10-118" tabindex="-1"></a><span class="co">#&gt;   Community 112:754 773 1134 1135 1143 1428 1532</span></span>
+<span id="cb10-119"><a href="#cb10-119" tabindex="-1"></a><span class="co">#&gt;   Community 113:772 1135</span></span>
+<span id="cb10-120"><a href="#cb10-120" tabindex="-1"></a><span class="co">#&gt;   Community 114:773 1135 1143 1144 1428</span></span>
+<span id="cb10-121"><a href="#cb10-121" tabindex="-1"></a><span class="co">#&gt;   Community 115:777 1286 1397 1496 1499 1525 1533 1547 1648 2451</span></span>
+<span id="cb10-122"><a href="#cb10-122" tabindex="-1"></a><span class="co">#&gt;   Community 116:780 859 860 862 1100 1103 1215 1246 1510</span></span>
+<span id="cb10-123"><a href="#cb10-123" tabindex="-1"></a><span class="co">#&gt;   Community 117:859 860 862 870 1100 1103 1117 1509</span></span>
+<span id="cb10-124"><a href="#cb10-124" tabindex="-1"></a><span class="co">#&gt;   Community 118:862 1100 1495</span></span>
+<span id="cb10-125"><a href="#cb10-125" tabindex="-1"></a><span class="co">#&gt;   Community 119:864 869 1094 1122 1123 1402 1504 1515 2274</span></span>
+<span id="cb10-126"><a href="#cb10-126" tabindex="-1"></a><span class="co">#&gt;   Community 120:874 1086 1122 1123 1402 1491 1585 1587 1588 1594</span></span>
+<span id="cb10-127"><a href="#cb10-127" tabindex="-1"></a><span class="co">#&gt;   Community 121:881 939 1129</span></span>
+<span id="cb10-128"><a href="#cb10-128" tabindex="-1"></a><span class="co">#&gt;   Community 122:939 1128 1129 1334 1335 1338 1354 1558 1886 2159 2160</span></span>
+<span id="cb10-129"><a href="#cb10-129" tabindex="-1"></a><span class="co">#&gt;   Community 123:946 956</span></span>
+<span id="cb10-130"><a href="#cb10-130" tabindex="-1"></a><span class="co">#&gt;   Community 124:948 956</span></span>
+<span id="cb10-131"><a href="#cb10-131" tabindex="-1"></a><span class="co">#&gt;   Community 125:975 1377</span></span>
+<span id="cb10-132"><a href="#cb10-132" tabindex="-1"></a><span class="co">#&gt;   Community 126:983 1741</span></span>
+<span id="cb10-133"><a href="#cb10-133" tabindex="-1"></a><span class="co">#&gt;   Community 127:988 989 990 1033 1747 1755 1758 2226 2233 2235 2250 2337 2528 2742 2956 2958 2961 2992 3008 3021 3150 3153 3157 3393 4298</span></span>
+<span id="cb10-134"><a href="#cb10-134" tabindex="-1"></a><span class="co">#&gt;   Community 128:989 990 1033 1040 1747 1751 1755 1758 2226 2233 2235 2250 2337 2488 2528 2731 2738 2742 2956 2958 2961 2992 3008 3021 3023 3150 3153 3157 3388 3393 3914 3976 4298 4346 5286</span></span>
+<span id="cb10-135"><a href="#cb10-135" tabindex="-1"></a><span class="co">#&gt;   Community 129:1004 1018 1021 1031 1043 1047 1053 1061 1068 2230 2231 2232 2234 2236 2239 2241 2248 2249 2251 3389</span></span>
+<span id="cb10-136"><a href="#cb10-136" tabindex="-1"></a><span class="co">#&gt;   Community 130:1018 1031 1037 1043 1047 1053 1060 1061 1068 2230 2231 2236 2241 2248 2249 2251 3389</span></span>
+<span id="cb10-137"><a href="#cb10-137" tabindex="-1"></a><span class="co">#&gt;   Community 131:1021 1028 1029 1043 1047 1053 1061 1066</span></span>
+<span id="cb10-138"><a href="#cb10-138" tabindex="-1"></a><span class="co">#&gt;   Community 132:1040 1055 1061 1064 2488 2956 2958 2961</span></span>
+<span id="cb10-139"><a href="#cb10-139" tabindex="-1"></a><span class="co">#&gt;   Community 133:1044 1054 1753</span></span>
+<span id="cb10-140"><a href="#cb10-140" tabindex="-1"></a><span class="co">#&gt;   Community 134:1045 1054</span></span>
+<span id="cb10-141"><a href="#cb10-141" tabindex="-1"></a><span class="co">#&gt;   Community 135:1053 1055 1061 1068 2231 2232 2236 2241 2249</span></span>
+<span id="cb10-142"><a href="#cb10-142" tabindex="-1"></a><span class="co">#&gt;   Community 136:1094 1122 1123 1242 1244 1376 1378 1402 1504 1515 1516 1531 2273 2274 2275</span></span>
+<span id="cb10-143"><a href="#cb10-143" tabindex="-1"></a><span class="co">#&gt;   Community 137:1100 1103 1111 1215 1374 1510 1537</span></span>
+<span id="cb10-144"><a href="#cb10-144" tabindex="-1"></a><span class="co">#&gt;   Community 138:1104 2273</span></span>
+<span id="cb10-145"><a href="#cb10-145" tabindex="-1"></a><span class="co">#&gt;   Community 139:1108 1279 1286 1547</span></span>
+<span id="cb10-146"><a href="#cb10-146" tabindex="-1"></a><span class="co">#&gt;   Community 140:1121 1377</span></span>
+<span id="cb10-147"><a href="#cb10-147" tabindex="-1"></a><span class="co">#&gt;   Community 141:1126 1336 1348 1349 1351 1353 1356 1535 1554</span></span>
+<span id="cb10-148"><a href="#cb10-148" tabindex="-1"></a><span class="co">#&gt;   Community 142:1134 1135 1143 1147 1269 1312 1652</span></span>
+<span id="cb10-149"><a href="#cb10-149" tabindex="-1"></a><span class="co">#&gt;   Community 143:1135 1143 1144 1148 1425 1428 1470 1543 1546</span></span>
+<span id="cb10-150"><a href="#cb10-150" tabindex="-1"></a><span class="co">#&gt;   Community 144:1265 1312</span></span>
+<span id="cb10-151"><a href="#cb10-151" tabindex="-1"></a><span class="co">#&gt;   Community 145:1276 1278 1286 1293 1310 1323 1503 1525 1528 1545 1934 2036</span></span>
+<span id="cb10-152"><a href="#cb10-152" tabindex="-1"></a><span class="co">#&gt;   Community 146:1279 1286 1323 1503 1525 1545 1547</span></span>
+<span id="cb10-153"><a href="#cb10-153" tabindex="-1"></a><span class="co">#&gt;   Community 147:1286 1293 1310 1323 1499 1503 1525 1528 1533 1545 1547 1648 1876 1934 2036</span></span>
+<span id="cb10-154"><a href="#cb10-154" tabindex="-1"></a><span class="co">#&gt;   Community 148:1293 1323 1327</span></span>
+<span id="cb10-155"><a href="#cb10-155" tabindex="-1"></a><span class="co">#&gt;   Community 149:1311 1331</span></span>
+<span id="cb10-156"><a href="#cb10-156" tabindex="-1"></a><span class="co">#&gt;   Community 150:1327 1329 2168 2539</span></span>
+<span id="cb10-157"><a href="#cb10-157" tabindex="-1"></a><span class="co">#&gt;   Community 151:1342 1348 1349 1353 1356 1357</span></span>
+<span id="cb10-158"><a href="#cb10-158" tabindex="-1"></a><span class="co">#&gt;   Community 152:1349 1351 1353 1356 1357 1535 1554</span></span>
+<span id="cb10-159"><a href="#cb10-159" tabindex="-1"></a><span class="co">#&gt;   Community 153:1359 2697</span></span>
+<span id="cb10-160"><a href="#cb10-160" tabindex="-1"></a><span class="co">#&gt;   Community 154:1367 1741 1744</span></span>
+<span id="cb10-161"><a href="#cb10-161" tabindex="-1"></a><span class="co">#&gt;   Community 155:1378 1383 1396 2171 3079</span></span>
+<span id="cb10-162"><a href="#cb10-162" tabindex="-1"></a><span class="co">#&gt;   Community 156:1410 2499 2994 3002 3011 3029</span></span>
+<span id="cb10-163"><a href="#cb10-163" tabindex="-1"></a><span class="co">#&gt;   Community 157:1412 1413 2211 3278 3296</span></span>
+<span id="cb10-164"><a href="#cb10-164" tabindex="-1"></a><span class="co">#&gt;   Community 158:1413 2206 2211 3278 3296</span></span>
+<span id="cb10-165"><a href="#cb10-165" tabindex="-1"></a><span class="co">#&gt;   Community 159:1463 1466</span></span>
+<span id="cb10-166"><a href="#cb10-166" tabindex="-1"></a><span class="co">#&gt;   Community 160:1474 1655</span></span>
+<span id="cb10-167"><a href="#cb10-167" tabindex="-1"></a><span class="co">#&gt;   Community 161:1486 4823</span></span>
+<span id="cb10-168"><a href="#cb10-168" tabindex="-1"></a><span class="co">#&gt;   Community 162:1525 1528 1533 1545 1547 1648 1934 2036 2141</span></span>
+<span id="cb10-169"><a href="#cb10-169" tabindex="-1"></a><span class="co">#&gt;   Community 163:1577 1585 1587</span></span>
+<span id="cb10-170"><a href="#cb10-170" tabindex="-1"></a><span class="co">#&gt;   Community 164:1588 1594 2665</span></span>
+<span id="cb10-171"><a href="#cb10-171" tabindex="-1"></a><span class="co">#&gt;   Community 165:1604 1817 1821 3834</span></span>
+<span id="cb10-172"><a href="#cb10-172" tabindex="-1"></a><span class="co">#&gt;   Community 166:1747 1751 1755 1758 1764 2337 2528 2956 2958 2961 3008 3021 3153 3157</span></span>
+<span id="cb10-173"><a href="#cb10-173" tabindex="-1"></a><span class="co">#&gt;   Community 167:1750 1753 1762</span></span>
+<span id="cb10-174"><a href="#cb10-174" tabindex="-1"></a><span class="co">#&gt;   Community 168:1753 1762 1769</span></span>
+<span id="cb10-175"><a href="#cb10-175" tabindex="-1"></a><span class="co">#&gt;   Community 169:1755 1758 1764 2337 2643 2956 2958 2961 3591</span></span>
+<span id="cb10-176"><a href="#cb10-176" tabindex="-1"></a><span class="co">#&gt;   Community 170:1760 2282</span></span>
+<span id="cb10-177"><a href="#cb10-177" tabindex="-1"></a><span class="co">#&gt;   Community 171:1809 1817 1864 2488 3362 3829 3834 4628 4677</span></span>
+<span id="cb10-178"><a href="#cb10-178" tabindex="-1"></a><span class="co">#&gt;   Community 172:1813 1836 1871 2046 2050 2673</span></span>
+<span id="cb10-179"><a href="#cb10-179" tabindex="-1"></a><span class="co">#&gt;   Community 173:1814 1863 1864</span></span>
+<span id="cb10-180"><a href="#cb10-180" tabindex="-1"></a><span class="co">#&gt;   Community 174:1817 1820 1821 1863 1864 2488 3362 3829 3834 4628 4677</span></span>
+<span id="cb10-181"><a href="#cb10-181" tabindex="-1"></a><span class="co">#&gt;   Community 175:1829 1864 4628</span></span>
+<span id="cb10-182"><a href="#cb10-182" tabindex="-1"></a><span class="co">#&gt;   Community 176:2036 2142</span></span>
+<span id="cb10-183"><a href="#cb10-183" tabindex="-1"></a><span class="co">#&gt;   Community 177:2045 2046 2050</span></span>
+<span id="cb10-184"><a href="#cb10-184" tabindex="-1"></a><span class="co">#&gt;   Community 178:2092 3365</span></span>
+<span id="cb10-185"><a href="#cb10-185" tabindex="-1"></a><span class="co">#&gt;   Community 179:2290 3389</span></span>
+<span id="cb10-186"><a href="#cb10-186" tabindex="-1"></a><span class="co">#&gt;   Community 180:2304 2306 3892 3893 4171</span></span>
+<span id="cb10-187"><a href="#cb10-187" tabindex="-1"></a><span class="co">#&gt;   Community 181:2329 2330</span></span>
+<span id="cb10-188"><a href="#cb10-188" tabindex="-1"></a><span class="co">#&gt;   Community 182:2330 3261</span></span>
+<span id="cb10-189"><a href="#cb10-189" tabindex="-1"></a><span class="co">#&gt;   Community 183:2488 2731 2956 2958 2961 3829 3834 3976</span></span>
+<span id="cb10-190"><a href="#cb10-190" tabindex="-1"></a><span class="co">#&gt;   Community 184:2667 3829</span></span>
+<span id="cb10-191"><a href="#cb10-191" tabindex="-1"></a><span class="co">#&gt;   Community 185:2725 2738</span></span>
+<span id="cb10-192"><a href="#cb10-192" tabindex="-1"></a><span class="co">#&gt;   Community 186:2741 2958</span></span>
+<span id="cb10-193"><a href="#cb10-193" tabindex="-1"></a><span class="co">#&gt;   Community 187:3022 3023 3029</span></span>
+<span id="cb10-194"><a href="#cb10-194" tabindex="-1"></a><span class="co">#&gt;   Community 188:3023 3102 3150 3153 3157 3393</span></span>
+<span id="cb10-195"><a href="#cb10-195" tabindex="-1"></a><span class="co">#&gt;   Community 189:3144 3892 3893</span></span>
+<span id="cb10-196"><a href="#cb10-196" tabindex="-1"></a><span class="co">#&gt;   Community 190:3153 3157 3190 3393</span></span>
+<span id="cb10-197"><a href="#cb10-197" tabindex="-1"></a><span class="co">#&gt;  =========================</span></span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

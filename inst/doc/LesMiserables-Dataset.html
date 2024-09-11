@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>ARLClustering - Testing LesMiserables dataset</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">ARLClustering - Testing LesMiserables
+dataset</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(arlclustering)</span></code></pre></div>
+<div id="dataset-description" class="section level2">
+<h2>Dataset description</h2>
+<p>The LesMiserables network dataset is provided as a gml file,
+containing 77 nodes and 254 edges.</p>
+</div>
+<div id="loading-network-dataset" class="section level2">
+<h2>Loading network dataset</h2>
+<ul>
+<li>Graph Label : LesMiserables Network</li>
+<li>Total Nodes : 254</li>
+<li>Total Edges : 77</li>
+<li>Average Degree : 6.597403</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Start the timer</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>t1 <span class="ot">&lt;-</span> <span class="fu">system.time</span>({</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>dataset_path <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;lesmiserables.gml&quot;</span>, <span class="at">package =</span> <span class="st">&quot;arlclustering&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="cf">if</span> (dataset_path <span class="sc">==</span> <span class="st">&quot;&quot;</span>) {</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="fu">stop</span>(<span class="st">&quot;lesmiserables.gml file not found&quot;</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>}</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">arlc_get_network_dataset</span>(dataset_path, <span class="st">&quot;LesMiserables&quot;</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  g<span class="sc">$</span>graphLabel</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>  g<span class="sc">$</span>totalEdges</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>  g<span class="sc">$</span>totalNodes</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  g<span class="sc">$</span>averageDegree</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>})</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co"># Display the total processing time</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;Graph loading Processing Time: &quot;</span>, t1[<span class="st">&quot;elapsed&quot;</span>], <span class="st">&quot; seconds</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; Graph loading Processing Time: 0.0140000000000029 seconds</span></span></code></pre></div>
+</div>
+<div id="generate-transactions" class="section level2">
+<h2>Generate Transactions</h2>
+<p>Next, we generate transactions from the graph, with a total rows of
+59</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Start the timer</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>t2 <span class="ot">&lt;-</span> <span class="fu">system.time</span>({</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  transactions <span class="ot">&lt;-</span> <span class="fu">arlc_gen_transactions</span>(g<span class="sc">$</span>graph)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  transactions</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>})</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co"># Display the total processing time</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;Transaction dataset Processing Time: &quot;</span>, t2[<span class="st">&quot;elapsed&quot;</span>], <span class="st">&quot; seconds</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; Transaction dataset Processing Time: 0.0069999999999979 seconds</span></span></code></pre></div>
+</div>
+<div id="get-apriori-thresholds" class="section level2">
+<h2>Get Apriori Thresholds</h2>
+<p>We obtain the apriori thresholds for the generated transactions. The
+following are the thresholds for the apriori execution: - The Minimum
+Support : 0.04 - The Minimum Confidence : 0.5 - The Lift : 19.66667 -
+The Gross Rules length : 51764 - The selection Ratio : 877</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Start the timer</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>t3 <span class="ot">&lt;-</span> <span class="fu">system.time</span>({</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  params <span class="ot">&lt;-</span> <span class="fu">arlc_get_apriori_thresholds</span>(transactions,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>                                      <span class="at">supportRange =</span> <span class="fu">seq</span>(<span class="fl">0.04</span>, <span class="fl">0.06</span>, <span class="at">by =</span> <span class="fl">0.01</span>),</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>                                      <span class="at">Conf =</span> <span class="fl">0.5</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  params<span class="sc">$</span>minSupp</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  params<span class="sc">$</span>minConf</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  params<span class="sc">$</span>bestLift</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  params<span class="sc">$</span>lenRules</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  params<span class="sc">$</span>ratio</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>})</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co"># Display the total processing time</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;Graph loading Processing Time: &quot;</span>, t3[<span class="st">&quot;elapsed&quot;</span>], <span class="st">&quot; seconds</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; Graph loading Processing Time: 0.141999999999999 seconds</span></span></code></pre></div>
+</div>
+<div id="generate-gross-rules" class="section level2">
+<h2>Generate Gross Rules</h2>
+<p>We use the obtained parameters to generate gross rules, where we
+obtain 51774 rules.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Start the timer</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>t4 <span class="ot">&lt;-</span> <span class="fu">system.time</span>({</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  minLenRules <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  maxLenRules <span class="ot">&lt;-</span> params<span class="sc">$</span>lenRules</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.finite</span>(maxLenRules) <span class="sc">||</span> maxLenRules <span class="sc">&gt;</span> <span class="dv">5</span><span class="sc">*</span><span class="fu">length</span>(transactions)) {</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    maxLenRules <span class="ot">&lt;-</span> <span class="dv">5</span><span class="sc">*</span><span class="fu">length</span>(transactions)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  }</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  grossRules <span class="ot">&lt;-</span> <span class="fu">arlc_gen_gross_rules</span>(transactions,</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>                                     <span class="at">minSupp =</span> params<span class="sc">$</span>minSupp,</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>                                     <span class="at">minConf =</span> params<span class="sc">$</span>minConf,</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>                                     <span class="at">minLenRules =</span> minLenRules<span class="sc">+</span><span class="dv">1</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>                                     <span class="at">maxLenRules =</span> maxLenRules)</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  grossRules<span class="sc">$</span>TotalRulesWithLengthFilter</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>})</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt; Apriori</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; Parameter specification:</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt;  confidence minval smax arem  aval originalSupport maxtime support minlen</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt;         0.5    0.1    1 none FALSE            TRUE       5    0.04      2</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt;  maxlen target  ext</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt;     295  rules TRUE</span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a><span class="co">#&gt; Algorithmic control:</span></span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a><span class="co">#&gt;  filter tree heap memopt load sort verbose</span></span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a><span class="co">#&gt;     0.1 TRUE TRUE  FALSE TRUE    2    TRUE</span></span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a><span class="co">#&gt; Absolute minimum support count: 2 </span></span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a><span class="co">#&gt; set item appearances ...[0 item(s)] done [0.00s].</span></span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a><span class="co">#&gt; set transactions ...[77 item(s), 59 transaction(s)] done [0.00s].</span></span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a><span class="co">#&gt; sorting and recoding items ... [50 item(s)] done [0.00s].</span></span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a><span class="co">#&gt; creating transaction tree ... done [0.00s].</span></span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a><span class="co">#&gt; checking subsets of size 1 2 3 4 5 6 7 8 9 10 11 done [0.00s].</span></span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a><span class="co">#&gt; writing ... [51774 rule(s)] done [0.01s].</span></span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a><span class="co">#&gt; creating S4 object  ... done [0.01s].</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Display the total number of clusters and the total processing time</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;Gross rules generation Time: &quot;</span>, t4[<span class="st">&quot;elapsed&quot;</span>], <span class="st">&quot; seconds</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; Gross rules generation Time: 0.0599999999999987 seconds</span></span></code></pre></div>
+</div>
+<div id="filter-significant-and-non-redundant-rules" class="section level2">
+<h2>Filter Significant and Non-Redundant Rules</h2>
+<p>We filter out redundant rules from the generated gross rules. Next,
+we filter out non-significant rules from the non-redundant rules, and we
+obtain the 1625 rule items.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>t5 <span class="ot">&lt;-</span> <span class="fu">system.time</span>({</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  NonRedRules <span class="ot">&lt;-</span> <span class="fu">arlc_get_NonR_rules</span>(grossRules<span class="sc">$</span>GrossRules)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  NonRSigRules <span class="ot">&lt;-</span> <span class="fu">arlc_get_significant_rules</span>(transactions,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>                                             NonRedRules<span class="sc">$</span>FiltredRules)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="co">#NonRSigRules$TotFiltredRules</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>})</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co"># Display the total number of clusters and the total processing time</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Clearing rules Processing Time: &quot;</span>, t5[<span class="st">&quot;elapsed&quot;</span>], <span class="st">&quot; seconds</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; Clearing rules Processing Time: 0.330000000000002 seconds</span></span></code></pre></div>
+</div>
+<div id="clean-and-genarate-final-rules" class="section level2">
+<h2>Clean and genarate final Rules</h2>
+<p>We clean the final set of rules to prepare for clustering. Then, we
+generate clusters based on the cleaned rules. The total identified
+clusters is 7 clusters.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>t6 <span class="ot">&lt;-</span> <span class="fu">system.time</span>({</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  cleanedRules <span class="ot">&lt;-</span> <span class="fu">arlc_clean_final_rules</span>(NonRSigRules<span class="sc">$</span>FiltredRules)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  clusters <span class="ot">&lt;-</span> <span class="fu">arlc_generate_clusters</span>(cleanedRules)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="co">#clusters$TotClusters</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>})</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co"># Display the total number of clusters and the total processing time</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;Cleaning final rules Processing Time: &quot;</span>, t6[<span class="st">&quot;elapsed&quot;</span>], <span class="st">&quot; seconds</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; Cleaning final rules Processing Time: 0.0990000000000002 seconds</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;The total comsumed time is:&quot;</span>,t1[<span class="st">&quot;elapsed&quot;</span>]<span class="sc">+</span> t2[<span class="st">&quot;elapsed&quot;</span>]<span class="sc">+</span>t3[<span class="st">&quot;elapsed&quot;</span>]<span class="sc">+</span>t4[<span class="st">&quot;elapsed&quot;</span>]<span class="sc">+</span>t5[<span class="st">&quot;elapsed&quot;</span>]<span class="sc">+</span>t6[<span class="st">&quot;elapsed&quot;</span>], <span class="st">&quot;seconds</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; The total comsumed time is:0.652000000000001seconds</span></span></code></pre></div>
+</div>
+<div id="plot-clusters" class="section level2">
+<h2>Plot Clusters</h2>
+<p>Finally, we visualize the identified clusters.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">arlc_clusters_plot</span>(g<span class="sc">$</span>graph,</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>                   g<span class="sc">$</span>graphLabel,</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>                   clusters<span class="sc">$</span>Clusters)</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; Total Identified Clusters: 7</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt;  =========================</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt;   Community 01:12 17 24 25 26 27 28 30 35 36 37 38 39 42 49 50 52 55 56 58 59 60 61 62 63 64 65 66 67 69 70 71 72 76 77</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt;   Community 02:17 18 19 20 21 22 23 24</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt;   Community 03:24 25 26 27 28 32 49 56 69 70 71 72</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co">#&gt;   Community 04:25 26 27 28 30 32 42 44 49 56 59 69 70 71 72 73 76</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt;   Community 05:26 27 28 30 32 42 44 49 50 52 56 58 59 63 65 69 70 71 72 73 76</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co">#&gt;   Community 06:30 32 35 36 37 38 39</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co">#&gt;   Community 07:43 69 70 71</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co">#&gt;  =========================</span></span></code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAYAAAAUg66AAAAEDmlDQ1BrQ0dDb2xvclNwYWNlR2VuZXJpY1JHQgAAOI2NVV1oHFUUPpu5syskzoPUpqaSDv41lLRsUtGE2uj+ZbNt3CyTbLRBkMns3Z1pJjPj/KRpKT4UQRDBqOCT4P9bwSchaqvtiy2itFCiBIMo+ND6R6HSFwnruTOzu5O4a73L3PnmnO9+595z7t4LkLgsW5beJQIsGq4t5dPis8fmxMQ6dMF90A190C0rjpUqlSYBG+PCv9rt7yDG3tf2t/f/Z+uuUEcBiN2F2Kw4yiLiZQD+FcWyXYAEQfvICddi+AnEO2ycIOISw7UAVxieD/Cyz5mRMohfRSwoqoz+xNuIB+cj9loEB3Pw2448NaitKSLLRck2q5pOI9O9g/t/tkXda8Tbg0+PszB9FN8DuPaXKnKW4YcQn1Xk3HSIry5ps8UQ/2W5aQnxIwBdu7yFcgrxPsRjVXu8HOh0qao30cArp9SZZxDfg3h1wTzKxu5E/LUxX5wKdX5SnAzmDx4A4OIqLbB69yMesE1pKojLjVdoNsfyiPi45hZmAn3uLWdpOtfQOaVmikEs7ovj8hFWpz7EV6mel0L9Xy23FMYlPYZenAx0yDB1/PX6dledmQjikjkXCxqMJS9WtfFCyH9XtSekEF+2dH+P4tzITduTygGfv58a5VCTH5PtXD7EFZiNyUDBhHnsFTBgE0SQIA9pfFtgo6cKGuhooeilaKH41eDs38Ip+f4At1Rq/sjr6NEwQqb/I/DQqsLvaFUjvAx+eWirddAJZnAj1DFJL0mSg/gcIpPkMBkhoyCSJ8lTZIxk0TpKDjXHliJzZPO50dR5ASNSnzeLvIvod0HG/mdkmOC0z8VKnzcQ2M/Yz2vKldduXjp9bleLu0ZWn7vWc+l0JGcaai10yNrUnXLP/8Jf59ewX+c3Wgz+B34Df+vbVrc16zTMVgp9um9bxEfzPU5kPqUtVWxhs6OiWTVW+gIfywB9uXi7CGcGW/zk98k/kmvJ95IfJn/j3uQ+4c5zn3Kfcd+AyF3gLnJfcl9xH3OfR2rUee80a+6vo7EK5mmXUdyfQlrYLTwoZIU9wsPCZEtP6BWGhAlhL3p2N6sTjRdduwbHsG9kq32sgBepc+xurLPW4T9URpYGJ3ym4+8zA05u44QjST8ZIoVtu3qE7fWmdn5LPdqvgcZz8Ww8BWJ8X3w0PhQ/wnCDGd+LvlHs8dRy6bLLDuKMaZ20tZrqisPJ5ONiCq8yKhYM5cCgKOu66Lsc0aYOtZdo5QCwezI4wm9J/v0X23mlZXOfBjj8Jzv3WrY5D+CsA9D7aMs2gGfjve8ArD6mePZSeCfEYt8CONWDw8FXTxrPqx/r9Vt4biXeANh8vV7/+/16ffMD1N8AuKD/A/8leAvFY9bLAAAAOGVYSWZNTQAqAAAACAABh2kABAAAAAEAAAAaAAAAAAACoAIABAAAAAEAAAEgoAMABAAAAAEAAAEgAAAAAKtAJY0AACviSURBVHgB7Z0HmB211YZlOhhMx/TeawDTezclNNMJNQTTyx+awQk1oYZeDYHQOw8dAqaYElNMqAaHXk3HgA0YsJn/vAINM/fe3b3C2nt315+eZ3dmNBpp5r2ab46OpJlumQWnIAIiIAJNIDBBE8pUkSIgAiLgCUiAVBFEQASaRkAC1DT0KlgEREACpDogAiLQNAISoKahV8EiIAISINUBERCBphGQADUNvQoWARGQAKkOiIAINI2ABKhp6FWwCIiABEh1QAREoGkEJEBNQ6+CRUAEJECqAyIgAk0jIAFqGnoVLAIiIAFSHRABEWgaAQlQ09CrYBEQAQmQ6oAIiEDTCEiAmoZeBYuACEiAVAdEQASaRkAC1DT0KlgEREACpDogAiLQNAISoKahV8EiIAISINUBERCBphGQADUNvQoWARGQAKkOiIAINI2ABKhp6FWwCIiABEh1QAREoGkEJEBNQ6+CRUAEJECqAyIgAk0jIAFqGnoVLAIiIAFSHRABEWgaAQlQ09CrYBEQAQmQ6oAIiEDTCEwUSv7444/d9ttv7zd32mknt9tuu4VdVcsbb7zR3XnnnT7+yCOPdAsttFBVmvaOOPHEE93999+fF7PRRhu5Qw45JN9m5eSTT3b//ve/87j111/fHXHEEX77lFNOcffee69fHzhwoJtggo6vxYceeqh75pln3PTTT+/4DVoLMb9na/l0xH377LOPGzZsmD+1fffd1/Xp06fqNEeMGFEzvlu3bm7yySd3U089tVtyySXdnnvu6aaddtr8+DFjxrg//vGPfnuRRRbJ60ueoJWVW265xfH3/PPPuw8++MDNP//8bplllnFHHXWUm2OOOUpHNqv+vfXWW2666abz1186oXHc+M31LfslvP3225mdg//r379/iK65tJs4T/vwww/XTNPekX/4wx/yc+C8F1544aoiF1hggVIaE9Y8za677prvs0qXx3fklXXXXdef8yyzzNLmacb8nm1m1oESvP7665mJSP7bLb/88jXP7qOPPsrThHpda0kdMTHL8xg9enR+3JprrpnHt7by5ZdfZjvssEN+XGU5U045ZXb99deXsmh0/Rs1alRmQphNNtlk2WuvvVY6lxQbv7W+5RaQQevUgSfi+++/72affXZ/He+++64z0C1e09JLL+2++OILv5+nokLnIHDppZc6u2Hyk33qqae8xbHUUkvlcZUr8847r9twww199E8//eR++OEHb8Hz1KaOYDnfcccdlYfVvd23b19nAuPTzzfffG6rrbZydqN7a+jFF190dvM7rDYs8GmmmabufFMmPO2009zf/va3lFmW8ppiiincpptu6uOwHOsNDRUgKs4777zjZpppJscJtxa++uorZ08xbx7PMMMMLTaRunfv7ivkt99+62hK2ZPFZ/vAAw/4ZXF/sbwDDjjA8ddSqLd8jv/6668d6SvN7JbyLgplSDN27FjHDUFeNAl69uwZdrW6xNSnOWFP2VbT1dpZ73nHsKhVTqo4GP3rX//y2c0222y+mcPGRRdd5M4//3wfX+sf4nTuueeWdo0cOdI/rGDw0EMPeVGaZJJJSmnq2Xj00Udz8Vl11VXd3Xff7aaaaip/6DHHHOPr4+WXX+4+//xz9/e//93R9EodaDZSD+Az88wzt3lvtVR+vfUhHE+9wHXB9c4444zutttuC7taXKIBGAdmxTt4N8Tx8f3337uDDz7Y3yjzzDOPP+Hf/e53bvDgwVUnet111zmeIjwprFnlb8RZZ53VnX322VVpiZh44ondyiuv7PchQCEEAVpllVXcRBNV6+xee+3lb1puXH64EGLK5/zxI3Cuc845pxeOgw46yHG9IZCGMvi76667vL8MoSJ9sMCOP/54h8hyU/H0oBLB6cEHHwzZVC3xf80111z+JkKAVl99dffGG29UpasVUc95c1wMi1rlpI6755573PDhw3225iZwiy++uF+/+uqr3TfffBNVHDfNggsu6I/hWG6+3xLOOOOM/LBTTz01F58QieBgIV1xxRUOf1VrYejQoXldOeuss0pJN9hgA79v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5qEtERCBBhKQADUQtooSAREoE5AAlXloSwREoIEEJEANhK2iREAEygQkQGUe2hIBEWggAQlQA2GrKBEQgTIBCVCZh7ZEQAQaSEAC1EDYKkoERKBMQAJU5qEtERCBBhKQADUQtooSAREoE5AAlXloSwREoIEEJEANhK2iREAEygQkQGUe2hIBEWggAQlQA2GrKBEQgTIBCVCZh7ZEQAQaSEAC1EDYKkoERKBMQAJU5qEtERCBBhKQADUQtooSAREoE5AAlXloSwREoIEEJEANhK2iREAEygQkQGUe2hIBEWggAQlQA2GrKBEQgTIBCVCZh7ZEQAQaSEAC1EDYKkoERKBMQAJU5qEtERCBBhKQADUQtooSAREoE5AAlXloSwREoIEEJEANhK2iRGB8I3DmmWe6VVdd1a200kqub9++buTIkR7Buuuu65cSoPGtRuh6RaBBBM455xw3ZMgQN3DgQDd48GC3yCKLuEMPPdSX/sEHH/hlt8xCg85HxYiACIxHBHr16uXuuusu17NnT3/VP/30kxs+fLibffbZvRi98sorThbQeFQhdKki0EgCb7/9di4+lDvBBBN48SmegwSoSEPrIiACyQjMMsss7rPPPsvzo7GFRVQMEqAiDa2LgAgkI9CnTx938skn5/ldddVV7tprr823WZEPqIRDGyIgAqkI4PPZc8893bBhw3zza5pppnEDBgxwM888c+4DkgCloq18REAEahJAiEaPHu2mmGKKqv0SoCokihABEWgUAfmAGkVa5YiACFQRkABVIVGECIhAowhIgBpFWuWIgAhUEZAAVSFRhAiIQKMISIAaRVrliIAIVBGYqCpGESIgAk0jMGzoUPeXww933SefvOocppl2WnfS2We7ySabrGrfuESMHTvWHXfKMe5/rw6rymbMj2Pczn/Y1W3ae7OqfeMa8e6772sg4rhC1PEikJLADptt5ha9/S43s+tWle0F3Sdzf7/5JrfBBhtU7auMYB7WgQce6G677bbKXVXbTBCde4G53ALnVu1yY0Y59/0FM7u3X36vemch5vPPP3eHHXaYe//9992aa67p+vXrV9hbe3WPvvs5WUC12ShWBJpCYEKbsDmbic9ObsKq8q+faOKquFoR9957r+vfv7/7/vvva+2uGTfZ1JO4WXcbW7Xv62d/ciMubbtc3vvTu3dvt/XWW7sNN9zQrb/++m7ZZZetyq8YweRUCVCRiNZFoAsQGDVqlJ/0GV761YhLOv74430x7733nn/lxvTTT19XsRKgujApkQh0HgJbbbWVGzNmTMNP+KOPPnK77767m2mmmdxUU01VV/nqBasLkxKJgAi0RYBJpvfff7/bZJNN3FlnndVWcr9fFlBdmJRIBBpDYM6553a7uzHu+Cmre7re+mqEO33WWZOfCJNER374rfvvfFNW5f3j6LFuvrnatmb2339/t+uuu3q/D71qWEFthYUXXki9YG1B0n4RaCQBmk7vvPNOzSLpfp9tttlq7quMJJ+ll17avfjii5W7am5/+umn7uuvv665jxeL1ZrJXkz8/PPPuyOOOMI3vSaccEL/2o22mmHMktds+CJFrYuACIwTgW+//bZNsSoWIAEq0tC6CIhAQwnICd1Q3CpMBESgSEBO6CINrYtAkwngwP34449rnsUkk0ziZphhhpr7xjXyq6++ct98803NbBjTM+mkk9bcNy6RvKReAjQuBHWsCCQmcMJxR7pjjjvFzTxT9etLP/rkWzfU5ootuuiirZZ63XXXueuvv94hWPvuu69bffXVW02P+PC+5u6zTFuV7psPR7heq6/onh40uGpfrYgHH3zQv3j+4osvrrW7FHfeuQMkQCUi2hCBJhN4/fVX3b9OnMTtXGPu5wZ9p3WMNG5NgJiTxRicQYMG+c8gM2/s6aefdt26Vc8tC5eK5YP49Bx+YIjKl98/+6EbsfugfLu1lREjRvj5YLPWOVTgxReH6sOErQHVPhHobASmnHJKPwEV64du+w8//NDR3d2IwOTXI488MqooOaGjcCmxCHRsAvhqGAT4ww8/uJ133tmPzWFcTnuHK6+80i211FJuiSWWiCpKAhSFS4lFoOMT+O6779yWW27pVl11VccI5fYOX375pZ99j9XFxwfftleB4AuqJ8gJXQ8lpRGBBhEYO/Yn98nnmbvu7urJpAMf+9b9uY3zoLm1+eabe+tnxx13bCP1r7t/GPmdG3Vd9ajpn0b94L4Z/smvCWusTTzxxO7EE0/0e7C82G5r5DSJNRK6BkxFiUAzCTz33BDX7/D/cz16VM/L6j7lVO6ccy913bt3b/EUb7jhBrfbbru5BRdcME+DNTKtvU2xpcC0jf/rf5h78+23qpIgEjtuu73bsc92VftqRbz22mvuz3/+s7v9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" /><!-- --></p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

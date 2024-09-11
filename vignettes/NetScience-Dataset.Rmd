@@ -1,0 +1,157 @@
+---
+title: "ARLClustering - Testing NetScience dataset"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ARLClustering - Testing NetScience dataset}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(arlclustering)
+#library(igraph)
+```
+
+## Dataset description
+The LesMiserables network dataset is provided as a gml file, containing 1589 nodes and 2742 edges.
+
+
+## Loading network dataset
+- Graph Label    : NetScience Network
+- Total Nodes    : 1589
+- Total Edges    : 2742
+- Average Degree : 3.451227
+```{r}
+# Start the timer
+t1 <- system.time({
+  dataset_path <- system.file("extdata", "netscience.gml", package = "arlclustering")
+  if (dataset_path == "") {
+    stop("netscience.gml file not found")
+  }
+  
+  g <- arlc_get_network_dataset(dataset_path, "NetScience")
+  g$graphLabel
+  g$totalNodes
+  g$totalEdges
+  g$averageDegree
+})
+
+# Display the total processing time
+message("Graph loading Processing Time: ", t1["elapsed"], " seconds\n")
+```
+
+## Generate Transactions
+
+Next, we generate transactions from the graph, with a total rows of 1140.
+
+```{r}
+# Start the timer
+t2 <- system.time({
+  transactions <- arlc_gen_transactions(g$graph)
+  transactions
+})
+
+# Display the total processing time
+message("Transaction dataset Processing Time: ", t2["elapsed"], " seconds\n")
+```
+
+## Get Apriori Thresholds
+
+We obtain the apriori thresholds for the generated transactions. The following are the thresholds for the apriori execution:
+- The Minimum Support    : 0.011
+- The Minimum Confidence : 0.5
+- The Lift               : 66.16071
+- The Gross Rules length : 875908
+- The selection Ratio    : 768
+
+```{r}
+# Start the timer
+t3 <- system.time({
+  params <- arlc_get_apriori_thresholds(transactions,
+                                        supportRange = seq(0.011, 0.012, by = 0.001),
+                                        Conf = 0.5)
+  params$minSupp
+  params$minConf
+  params$bestLift
+  params$lenRules
+  params$ratio
+})
+
+# Display the total processing time
+message("Graph loading Processing Time: ", t3["elapsed"], " seconds\n")
+```
+
+## Generate Gross Rules
+
+We use the obtained parameters to generate gross rules, where we obtain 875908 rules.
+
+```{r}
+# Start the timer
+t4 <- system.time({
+  minLenRules <- 1
+  maxLenRules <- params$lenRules
+  if (!is.finite(maxLenRules) || maxLenRules > 5*length(transactions)) {
+    maxLenRules <- 5*length(transactions)
+  }
+  
+  grossRules <- arlc_gen_gross_rules(transactions,
+                                     minSupp = params$minSupp,
+                                     minConf = params$minConf,
+                                     minLenRules = minLenRules+1,
+                                     maxLenRules = maxLenRules)
+  grossRules$TotalRulesWithLengthFilter
+})
+# Display the total number of clusters and the total processing time
+message("Gross rules generation Time: ", t4["elapsed"], " seconds\n")
+```
+
+## Filter Significant and Non-Redundant Rules
+
+We filter out redundant rules from the generated gross rules. Next, we filter out non-significant rules from the non-redundant rules, and we obtain the 388 rule items.
+
+```{r}
+t5 <- system.time({
+  NonRedRules <- arlc_get_NonR_rules(grossRules$GrossRules)
+  NonRSigRules <- arlc_get_significant_rules(transactions,
+                                             NonRedRules$FiltredRules)
+  NonRSigRules$TotFiltredRules
+})
+# Display the total number of clusters and the total processing time
+message("\nClearing rules Processing Time: ", t5["elapsed"], " seconds\n")
+```
+
+## Clean and genarate final Rules
+
+We clean the final set of rules to prepare for clustering. Then, we generate clusters based on the cleaned rules. The total identified clusters is 4 clusters.
+
+```{r}
+t6 <- system.time({
+  cleanedRules <- arlc_clean_final_rules(NonRSigRules$FiltredRules)
+  clusters <- arlc_generate_clusters(cleanedRules)
+  clusters$TotClusters
+})
+# Display the total number of clusters and the total processing time
+message("Cleaning final rules Processing Time: ", t6["elapsed"], " seconds\n")
+
+message("The total comsumed time is:",t1["elapsed"]+ t2["elapsed"]+t3["elapsed"]+t4["elapsed"]+t5["elapsed"]+t6["elapsed"], "seconds\n")
+```
+
+## Plot Clusters
+
+Finally, we visualize the identified clusters.
+
+```{r}
+arlc_clusters_plot(g$graph,
+                   g$graphLabel,
+                   clusters$Clusters)
+
+```
+
+
